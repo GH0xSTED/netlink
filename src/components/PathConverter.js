@@ -1,6 +1,7 @@
 // PathConverter.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { detectPathType, convertPath } from '../utils/pathUtils';
+import { debounce } from '../utils/debounce';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -8,6 +9,7 @@ function PathConverter() {
     const [inputPath, setInputPath] = useState('');
     const [convertedPath, setConvertedPath] = useState('');
     const [pathOS, setPathOS] = useState('');
+    const buttonSound = new Audio('/button.aac')
 
     useEffect(() => {
         if (convertedPath) {
@@ -20,10 +22,7 @@ function PathConverter() {
         }
     }, [convertedPath]);
 
-    const handleInputChange = (event) => {
-        const path = event.target.value;
-        setInputPath(path);
-
+    const validateAndConvertPath = useCallback(debounce((path) => {
         const pathType = detectPathType(path);
         if (pathType === 'invalid') {
             toast.error('Invalid file path 😫');
@@ -32,8 +31,19 @@ function PathConverter() {
         } else {
             setConvertedPath(convertPath(path, pathType));
             setPathOS(pathType);
+            if (pathType !== 'invalid') {
+                buttonSound.play().catch(err => console.error('Error playing sound:', err));
+            }
         }
-    };
+    }, 300), []);
+
+    const handleInputChange = (event) => {
+        const path = event.target.value;
+        setInputPath(path);
+        validateAndConvertPath(path);
+
+    
+    }    
 
     const clearInput = () => {
         setInputPath('');
