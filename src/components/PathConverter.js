@@ -12,10 +12,10 @@ function PathConverter() {
     useEffect(() => {
         if (convertedPath) {
             navigator.clipboard.writeText(convertedPath)
-                .then(() => toast.success('File path copied to clipboard!'))
+                .then(() => toast.success('File path copied to clipboard! 🎉'))
                 .catch(err => {
                     console.error('Failed to copy path: ', err);
-                    toast.error('Failed to copy path to clipboard');
+                    toast.error('Failed to copy path to clipboard 🤔');
                 });
         }
     }, [convertedPath]);
@@ -26,7 +26,7 @@ function PathConverter() {
 
         const pathType = detectPathType(path);
         if (pathType === 'invalid') {
-            toast.error('Invalid file path');
+            toast.error('Invalid file path 😫');
             setConvertedPath('');
             setPathOS('');
         } else {
@@ -65,7 +65,7 @@ function PathConverter() {
                 )}
                 <h2 className="text-base"><code>Converted Path: {convertedPath}</code></h2>
             </div>
-            <ToastContainer position="top-center" autoClose={5000} />
+            <ToastContainer position="top-center" autoClose={5000} className="text-sm"/>
         </div>
     );
 }
